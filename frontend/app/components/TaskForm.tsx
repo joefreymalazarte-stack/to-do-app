@@ -9,6 +9,7 @@ interface TaskFormProps {
 export default function TaskForm({ onTaskAdded }: TaskFormProps) {
   const [title, setTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ export default function TaskForm({ onTaskAdded }: TaskFormProps) {
     }
 
     setIsSubmitting(true);
+    setSuccessMessage('');
 
     try {
       const response = await fetch('http://localhost:3001/tasks', {
@@ -45,6 +47,8 @@ export default function TaskForm({ onTaskAdded }: TaskFormProps) {
         });
 
         setTitle('');
+        setSuccessMessage(`✓ "${title}" added to To Do`);
+        setTimeout(() => setSuccessMessage(''), 3000);
         onTaskAdded();
       }
     } catch (error) {
@@ -56,21 +60,27 @@ export default function TaskForm({ onTaskAdded }: TaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-3 shadow-md flex gap-3 items-end">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Task title..."
-        className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 whitespace-nowrap disabled:bg-gray-400"
-      >
-        {isSubmitting ? 'Creating...' : 'Create Task'}
-      </button>
-    </form>
+    <div className="space-y-2">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-3 shadow-md flex gap-3 items-end">
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Task title..."
+          className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 whitespace-nowrap disabled:bg-gray-400"
+        >
+          {isSubmitting ? 'Creating...' : 'Create Task'}
+        </button>
+      </form>
+      {successMessage && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded text-sm">
+          {successMessage}
+        </div>
+      )}
+    </div>
   );
-}
