@@ -69,6 +69,9 @@ export default function Column({ status, tasks, onTaskUpdated, allTasks }: Colum
 
       if (response.ok) {
         // Task was updated successfully, create activity log
+        const fromStatus = columnNames[task.status] || task.status;
+        const toStatus = columnNames[status] || status;
+        
         await fetch('http://localhost:3001/activity-logs', {
           method: 'POST',
           headers: {
@@ -77,10 +80,7 @@ export default function Column({ status, tasks, onTaskUpdated, allTasks }: Colum
           body: JSON.stringify({
             taskId,
             action: 'status_changed',
-            details: {
-              from: task.status,
-              to: status,
-            },
+            details: `"${task.title}" moved from ${fromStatus} to ${toStatus}`,
           }),
         });
 
