@@ -56,8 +56,8 @@ export default function ActivityLog({ logs, onLogsCleared }: ActivityLogProps) {
   };
 
   return (
-    <div className="w-full flex flex-col h-full">
-      <div className="flex items-center justify-between mb-2">
+    <div className="w-full flex flex-col h-full overflow-hidden">
+      <div className="flex items-center justify-between mb-2 flex-shrink-0">
         <h2 className="text-lg font-bold text-white">Activity Log</h2>
         <button
           onClick={handleClearAll}

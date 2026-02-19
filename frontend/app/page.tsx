@@ -79,8 +79,8 @@ export default function Home() {
       </div>
       
       {/* Activity Log Footer */}
-      <div className="bg-indigo-600 text-white border-t border-indigo-700 px-6 py-4 flex-shrink-0">
-        <ActivityLog logs={activityLogs} />
+      <div className="bg-indigo-600 text-white border-t border-indigo-700 px-6 py-3 h-40 flex flex-col flex-shrink-0 overflow-hidden">
+        <ActivityLog logs={activityLogs} onLogsCleared={handleTaskUpdated} />
       </div>
     </div>
   );
