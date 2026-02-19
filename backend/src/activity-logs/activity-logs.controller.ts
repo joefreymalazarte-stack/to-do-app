@@ -25,4 +25,9 @@ export class ActivityLogsController {
   remove(@Param('id') id: string) {
     return this.activityLogsService.remove(id);
   }
+
+  @Delete()
+  removeAll() {
+    return this.activityLogsService.removeAll();
+  }
 }

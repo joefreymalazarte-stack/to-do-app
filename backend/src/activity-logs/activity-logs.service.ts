@@ -27,4 +27,9 @@ export class ActivityLogsService {
   async remove(id: string): Promise<ActivityLog | null> {
     return this.activityLogModel.findByIdAndDelete(id).exec();
   }
+
+  async removeAll(): Promise<{ deletedCount: number }> {
+    const result = await this.activityLogModel.deleteMany({}).exec();
+    return { deletedCount: result.deletedCount };
+  }
 }

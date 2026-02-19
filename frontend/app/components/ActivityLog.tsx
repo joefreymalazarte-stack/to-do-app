@@ -12,10 +12,12 @@ interface ActivityLogEntry {
 
 interface ActivityLogProps {
   logs: ActivityLogEntry[];
+  onLogsCleared?: () => void;
 }
 
-export default function ActivityLog({ logs }: ActivityLogProps) {
+export default function ActivityLog({ logs, onLogsCleared }: ActivityLogProps) {
   const [displayLogs, setDisplayLogs] = useState<ActivityLogEntry[]>([]);
+  const [isClearing, setIsClearing] = useState(false);
 
   useEffect(() => {
     setDisplayLogs(logs);
@@ -28,9 +30,44 @@ export default function ActivityLog({ logs }: ActivityLogProps) {
     deleted: '🗑️ Deleted',
   };
 
+  const handleClearAll = async () => {
+    if (!window.confirm('Are you sure you want to delete all activity history? This cannot be undone.')) {
+      return;
+    }
+
+    setIsClearing(true);
+    try {
+      const response = await fetch('http://localhost:3001/activity-logs', {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setDisplayLogs([]);
+        onLogsCleared?.();
+      } else {
+        alert('Failed to clear activity logs');
+      }
+    } catch (error) {
+      console.error('Error clearing activity logs:', error);
+      alert('Failed to clear activity logs');
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col h-full">
-      <h2 className="text-lg font-bold mb-2 text-white">Activity Log</h2>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-lg font-bold text-white">Activity Log</h2>
+        <button
+          onClick={handleClearAll}
+          disabled={isClearing || displayLogs.length === 0}
+          className="bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white px-2 py-1 rounded text-xs font-medium transition-colors"
+          title="Clear all activity history"
+        >
+          {isClearing ? 'Clearing...' : 'Clear All'}
+        </button>
+      </div>
 
       {displayLogs.length === 0 ? (
         <p className="text-indigo-200 text-sm">No activities yet</p>
